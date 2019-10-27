@@ -1,0 +1,4 @@
+{
+  "init_first_stage": ["system/core/init"],
+  "CarDialerApp": ["packages/apps/Car/Dialer"]
+}

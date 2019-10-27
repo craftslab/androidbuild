@@ -1,0 +1,131 @@
+diff --git a/cmd/soong_ui/main.go b/cmd/soong_ui/main.go
+index 4d59a392..a1670cdb 100644
+--- a/cmd/soong_ui/main.go
++++ b/cmd/soong_ui/main.go
+@@ -417,6 +417,7 @@ func make(ctx build.Context, config build.Config, _ []string, logsDir string) {
+ 	if config.Checkbuild() {
+ 		toBuild |= build.RunBuildTests
+ 	}
++	fmt.Fprintln(os.Stderr, "make: build.Build")
+ 	build.Build(ctx, config, toBuild)
+ }
+ 
+diff --git a/ui/build/build.go b/ui/build/build.go
+index 59d14748..a0a451a9 100644
+--- a/ui/build/build.go
++++ b/ui/build/build.go
+@@ -15,6 +15,7 @@
+ package build
+ 
+ import (
++	"fmt"
+ 	"io/ioutil"
+ 	"os"
+ 	"path/filepath"
+@@ -129,6 +130,8 @@ func Build(ctx Context, config Config, what int) {
+ 	ctx.Verboseln("Starting build with args:", config.Arguments())
+ 	ctx.Verboseln("Environment:", config.Environment().Environ())
+ 
++	fmt.Fprintln(os.Stderr, "Build: e")
++
+ 	if config.SkipMake() {
+ 		ctx.Verboseln("Skipping Make/Kati as requested")
+ 		what = what & (BuildSoong | BuildNinja)
+@@ -180,11 +183,13 @@ func Build(ctx Context, config Config, what int) {
+ 
+ 	if what&BuildSoong != 0 {
+ 		// Run Soong
++		fmt.Fprintln(os.Stderr, "Build: runSoong")
+ 		runSoong(ctx, config)
+ 	}
+ 
+ 	if what&BuildKati != 0 {
+ 		// Run ckati
++		fmt.Fprintln(os.Stderr, "Build: runKati")
+ 		genKatiSuffix(ctx, config)
+ 		runKatiCleanSpec(ctx, config)
+ 		runKatiBuild(ctx, config)
+@@ -212,6 +217,9 @@ func Build(ctx Context, config Config, what int) {
+ 		}
+ 
+ 		// Run ninja
++		fmt.Fprintln(os.Stderr, "Build: runNinja")
+ 		runNinja(ctx, config)
+ 	}
++
++	fmt.Fprintln(os.Stderr, "Build: x")
+ }
+diff --git a/ui/build/soong.go b/ui/build/soong.go
+index 33884170..89eb771a 100644
+--- a/ui/build/soong.go
++++ b/ui/build/soong.go
+@@ -15,6 +15,7 @@
+ package build
+ 
+ import (
++	"fmt"
+ 	"os"
+ 	"path/filepath"
+ 	"strconv"
+@@ -30,10 +31,14 @@ func runSoong(ctx Context, config Config) {
+ 	ctx.BeginTrace(metrics.RunSoong, "soong")
+ 	defer ctx.EndTrace()
+ 
++	fmt.Fprintln(os.Stderr, "runSoong: e")
++
+ 	func() {
+ 		ctx.BeginTrace(metrics.RunSoong, "blueprint bootstrap")
+ 		defer ctx.EndTrace()
+ 
++		fmt.Fprintln(os.Stderr, "runSoong: blueprint bootstrap")
++
+ 		cmd := Command(ctx, config, "blueprint bootstrap", "build/blueprint/bootstrap.bash", "-t")
+ 		cmd.Environment.Set("BLUEPRINTDIR", "./build/blueprint")
+ 		cmd.Environment.Set("BOOTSTRAP", "./build/blueprint/bootstrap.bash")
+@@ -52,6 +57,8 @@ func runSoong(ctx Context, config Config) {
+ 		ctx.BeginTrace(metrics.RunSoong, "environment check")
+ 		defer ctx.EndTrace()
+ 
++		fmt.Fprintln(os.Stderr, "runSoong: environment check")
++
+ 		envFile := filepath.Join(config.SoongOutDir(), ".soong.environment")
+ 		envTool := filepath.Join(config.SoongOutDir(), ".bootstrap/bin/soong_env")
+ 		if _, err := os.Stat(envFile); err == nil {
+@@ -88,6 +95,8 @@ func runSoong(ctx Context, config Config) {
+ 		ctx.BeginTrace(metrics.RunSoong, "minibp")
+ 		defer ctx.EndTrace()
+ 
++		fmt.Fprintln(os.Stderr, "runSoong: minibp")
++
+ 		minibp := filepath.Join(config.SoongOutDir(), ".minibootstrap/minibp")
+ 		if _, err := microfactory.Build(&cfg, minibp, "github.com/google/blueprint/bootstrap/minibp"); err != nil {
+ 			ctx.Fatalln("Failed to build minibp:", err)
+@@ -98,6 +107,8 @@ func runSoong(ctx Context, config Config) {
+ 		ctx.BeginTrace(metrics.RunSoong, "bpglob")
+ 		defer ctx.EndTrace()
+ 
++		fmt.Fprintln(os.Stderr, "runSoong: bpglob")
++
+ 		bpglob := filepath.Join(config.SoongOutDir(), ".minibootstrap/bpglob")
+ 		if _, err := microfactory.Build(&cfg, bpglob, "github.com/google/blueprint/bootstrap/bpglob"); err != nil {
+ 			ctx.Fatalln("Failed to build bpglob:", err)
+@@ -112,6 +123,8 @@ func runSoong(ctx Context, config Config) {
+ 		nr := status.NewNinjaReader(ctx, ctx.Status.StartTool(), fifo)
+ 		defer nr.Close()
+ 
++		fmt.Fprintln(os.Stderr, "runSoong: soong: " + name)
++
+ 		cmd := Command(ctx, config, "soong "+name,
+ 			config.PrebuiltBuildTool("ninja"),
+ 			"-d", "keepdepfile",
+@@ -123,6 +136,10 @@ func runSoong(ctx Context, config Config) {
+ 		cmd.RunAndStreamOrFatal()
+ 	}
+ 
++	fmt.Fprintln(os.Stderr, "runSoong: minibootstrap")
+ 	ninja("minibootstrap", ".minibootstrap/build.ninja")
++	fmt.Fprintln(os.Stderr, "runSoong: bootstrap")
+ 	ninja("bootstrap", ".bootstrap/build.ninja")
++
++	fmt.Fprintln(os.Stderr, "runSoong: x")
+ }

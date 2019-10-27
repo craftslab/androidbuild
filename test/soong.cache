@@ -1,0 +1,4 @@
+{
+  "adbd": ["system/core/adb"],
+  "ext": ["frameworks/base"]
+}
