@@ -164,17 +164,17 @@ def soong(cache, ninja, name):
     return out, status
 
 
-def _logging(level, name):
-    if level == logging.DEBUG:
+def _logging(_level, name):
+    if _level == logging.DEBUG:
         fmt = '%(filename)s: %(levelname)s: %(message)s'
     else:
         fmt = '%(levelname)s: %(message)s'
 
     if name is None:
-        logging.basicConfig(format=fmt, level=level)
+        logging.basicConfig(format=fmt, level=_level)
     else:
         if not os.path.exists(name):
-            logging.basicConfig(filename=name, format=fmt, level=level)
+            logging.basicConfig(filename=name, format=fmt, level=_level)
         else:
             print('%s already exist' % name)
             return False
