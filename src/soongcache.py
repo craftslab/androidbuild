@@ -55,15 +55,17 @@ def fetch(name):
         """
         if _direct is True:
             if _data.startswith('# '):
-                return _data.replace('# ', '').strip(), True
+                return _data.replace('# ', '').strip(), None, True
         _buf = None
+        _build = None
         _status = False
         for item in build:
             if _data.startswith('# %s:' % item):
                 _buf = _data.split(':')[1].strip()
+                _build = item
                 _status = True
                 break
-        return _buf, _status
+        return _buf, _build, _status
 
     with open(name, 'r') as f:
         buf = {}
@@ -73,8 +75,8 @@ def fetch(name):
             if len(line.strip().strip('\n').strip('\r')) == 0 or not line.startswith('#'):
                 continue
             if _index < len(build):
-                found, status = _fetch(line, _next)
-                if status is True:
+                found, _type, status = _fetch(line, _next)
+                if status is True and (_type == build[_index] or _next is True):
                     if found is not None and len(found) != 0:
                         buf[build[_index]] = found
                         _next = False

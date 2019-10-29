@@ -246,10 +246,7 @@ def main():
 
     if options.soong_cache is not None and options.soong_ninja is not None:
         out, status = soong(options.soong_cache, options.soong_ninja, options.file_path)
-        if status is True:
-            logging.info('Build completed successfully')
-            return 0
-        else:
+        if status is False:
             if out is not None:
                 logging.info('Failed to build target')
                 if options.output_file is not None:
@@ -258,10 +255,7 @@ def main():
 
     if options.kati_cache is not None and options.kati_ninja is not None:
         out, status = kati(options.kati_cache, options.kati_ninja, options.file_path)
-        if status is True:
-            logging.info('Build completed successfully')
-            return 0
-        else:
+        if status is False:
             if out is not None:
                 logging.info('Failed to build target')
                 if options.output_file is not None:
@@ -271,7 +265,7 @@ def main():
                 logging.error('Failed to run ninja')
                 return -7
 
-    logging.debug('Done')
+    logging.info('Build completed successfully')
 
     return 0
 

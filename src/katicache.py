@@ -212,13 +212,15 @@ def fetch(name):
                'build OUTPUT: RULENAME INPUT
         """
         _buf = None
+        _build = None
         _status = False
         for item in build:
             if _data.strip().startswith(item):
                 _buf = _data.replace(item+' ', '').replace('= ', '').strip()
+                _build = item
                 _status = True
                 break
-        return _buf, _status
+        return _buf, _build, _status
 
     with open(name, 'r') as f:
         buf = {}
@@ -227,8 +229,8 @@ def fetch(name):
             if len(line.strip().strip('\n').strip('\r')) == 0 or line.startswith('#') or line.startswith('build target:'):
                 continue
             if _index < len(build):
-                found, status = _fetch(line)
-                if status is True:
+                found, _type, status = _fetch(line)
+                if status is True and _type == build[_index]:
                     if found is not None and len(found) != 0:
                         buf[build[_index]] = found
                         _index += 1
