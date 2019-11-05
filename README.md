@@ -6,8 +6,9 @@ Build system with Ninja for Google Android.
 ## Running
 
 ```bash
-# Update Ninja for Android.bp/.mk
-# TBD
+# Update Ninja for Android.bp/.mk (apply patch to $AOSP required)
+cd "$AOSP"; source build/envsetup.sh; lunch
+cd "$AOSP"; ./out/soong_ui --not-build-ninja
 
 # Build source in Android.bp
 export PATH=$AOSP/prebuilts/build-tools/linux-x86/bin/:$PATH

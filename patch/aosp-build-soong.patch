@@ -1,0 +1,55 @@
+diff --git a/cmd/soong_ui/main.go b/cmd/soong_ui/main.go
+index 974c644..753741b 100644
+--- a/cmd/soong_ui/main.go
++++ b/cmd/soong_ui/main.go
+@@ -91,6 +91,14 @@ var commands []command = []command{
+ 		config:      buildActionConfig,
+ 		stdio:       stdio,
+ 		run:         make,
++       }, {
++		flag:        "--not-build-ninja",
++		description: "not build ninja, build product config, soong, and kati file only",
++		config: func(ctx build.Context, args ...string) build.Config {
++			return build.NewConfig(ctx, args...)
++		},
++		stdio: stdio,
++		run:   make,
+ 	},
+ }
+ 
+@@ -455,7 +463,7 @@ func make(ctx build.Context, config build.Config, _ []string, logsDir string) {
+ 		ctx.Fatal("done")
+ 	}
+ 
+-	toBuild := build.BuildAll
++	toBuild := build.BuildProductConfig | build.BuildSoong | build.BuildKati
+ 	if config.Checkbuild() {
+ 		toBuild |= build.RunBuildTests
+ 	}
+diff --git a/ui/build/build.go b/ui/build/build.go
+index 6a19314..87e32af 100644
+--- a/ui/build/build.go
++++ b/ui/build/build.go
+@@ -211,7 +211,7 @@ func Build(ctx Context, config Config, what int) {
+ 		testForDanglingRules(ctx, config)
+ 	}
+ 
+-	if what&BuildNinja != 0 {
++	if what&BuildProductConfig != 0 || what&BuildSoong != 0 || what&BuildKati != 0 {
+ 		if !config.SkipMake() {
+ 			installCleanIfNecessary(ctx, config)
+ 		}
+diff --git a/ui/build/ninja.go b/ui/build/ninja.go
+index 66750d6..9a0eb04 100644
+--- a/ui/build/ninja.go
++++ b/ui/build/ninja.go
+@@ -102,8 +102,7 @@ func runNinja(ctx Context, config Config) {
+ 		}
+ 	}()
+ 
+-	ctx.Status.Status("Starting ninja...")
+-	cmd.RunAndStreamOrFatal()
++	ctx.Status.Status("Build completed successfully")
+ }
+ 
+ type statusChecker struct {
