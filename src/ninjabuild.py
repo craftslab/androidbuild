@@ -15,15 +15,6 @@ level = {
 }
 
 
-class BuildException(Exception):
-    def __init__(self, info):
-        super().__init__(self)
-        self._info = info
-
-    def __str__(self):
-        return self._info
-
-
 class Build:
     def __init__(self, cache, name):
         self.cache = cache
@@ -31,7 +22,7 @@ class Build:
 
         self.buf = self._load()
         if self.buf is None or len(self.buf) == 0:
-            raise BuildException('Failed to load cache')
+            raise Exception('Failed to load cache')
 
     def _load(self):
         """
@@ -82,7 +73,7 @@ class Kati(Build):
 
         self.target = self.fetch()
         if self.target is None or len(self.target) == 0:
-            raise BuildException('Failed to fetch target')
+            raise Exception('Failed to fetch target')
 
     def build(self):
         def _build(target):
@@ -114,7 +105,7 @@ class Soong(Build):
 
         self.target = self.fetch()
         if self.target is None or len(self.target) == 0:
-            raise BuildException('Failed to fetch target')
+            raise Exception('Failed to fetch target')
 
     def build(self):
         def _build(target):
@@ -148,7 +139,7 @@ def kati(cache, ninja, name):
     try:
         instance = Kati(cache, ninja, name)
         out, status = instance.build()
-    except BuildException as _:
+    except Exception as _:
         return None, False
 
     return out, status
@@ -158,7 +149,7 @@ def soong(cache, ninja, name):
     try:
         instance = Soong(cache, ninja, name)
         out, status = instance.build()
-    except BuildException as _:
+    except Exception as _:
         return None, False
 
     return out, status
