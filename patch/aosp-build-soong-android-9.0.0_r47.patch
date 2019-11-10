@@ -1,0 +1,61 @@
+diff --git a/cmd/soong_ui/main.go b/cmd/soong_ui/main.go
+index 2ca7ebf..06cf27e 100644
+--- a/cmd/soong_ui/main.go
++++ b/cmd/soong_ui/main.go
+@@ -49,7 +49,8 @@ func main() {
+ 
+ 	if len(os.Args) < 2 || !(inList("--make-mode", os.Args) ||
+ 		os.Args[1] == "--dumpvars-mode" ||
+-		os.Args[1] == "--dumpvar-mode") {
++		os.Args[1] == "--dumpvar-mode" ||
++		inList("--disable-build-ninja", os.Args)) {
+ 
+ 		log.Fatalln("The `soong` native UI is not yet available.")
+ 	}
+@@ -114,7 +115,7 @@ func main() {
+ 	} else if os.Args[1] == "--dumpvars-mode" {
+ 		dumpVars(buildCtx, config, os.Args[2:])
+ 	} else {
+-		toBuild := build.BuildAll
++		toBuild := build.BuildProductConfig | build.BuildSoong | build.BuildKati
+ 		if config.Checkbuild() {
+ 			toBuild |= build.RunBuildTests
+ 		}
+diff --git a/ui/build/build.go b/ui/build/build.go
+index 78eb6a3..830d1b9 100644
+--- a/ui/build/build.go
++++ b/ui/build/build.go
+@@ -180,7 +180,7 @@ func Build(ctx Context, config Config, what int) {
+ 		testForDanglingRules(ctx, config)
+ 	}
+ 
+-	if what&BuildNinja != 0 {
++	if what&BuildProductConfig != 0 || what&BuildSoong != 0 || what&BuildKati != 0 {
+ 		if !config.SkipMake() {
+ 			installCleanIfNecessary(ctx, config)
+ 		}
+diff --git a/ui/build/config.go b/ui/build/config.go
+index 27ed8e9..e650c6d 100644
+--- a/ui/build/config.go
++++ b/ui/build/config.go
+@@ -204,6 +204,7 @@ func (c *configImpl) parseArgs(ctx Context, args []string) {
+ 	for i := 0; i < len(args); i++ {
+ 		arg := strings.TrimSpace(args[i])
+ 		if arg == "--make-mode" {
++		} else if arg == "--disable-build-ninja" {
+ 		} else if arg == "showcommands" {
+ 			c.verbose = true
+ 		} else if arg == "--skip-make" {
+diff --git a/ui/build/ninja.go b/ui/build/ninja.go
+index 96b5e9d..9c49d93 100644
+--- a/ui/build/ninja.go
++++ b/ui/build/ninja.go
+@@ -102,7 +102,7 @@ func runNinja(ctx Context, config Config) {
+ 	startTime := time.Now()
+ 	defer ctx.ImportNinjaLog(logPath, startTime)
+ 
+-	cmd.RunOrFatal()
++	ctx.Verbosef("Build completed successfully")
+ }
+ 
+ type statusChecker struct {
