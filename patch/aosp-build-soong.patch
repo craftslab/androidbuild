@@ -7,8 +7,8 @@ index 974c644..753741b 100644
  		stdio:       stdio,
  		run:         make,
 +       }, {
-+		flag:        "--not-build-ninja",
-+		description: "not build ninja, build product config, soong, and kati file only",
++		flag:        "--disable-build-ninja",
++		description: "disable building ninja, but build product config, soong, and kati file only",
 +		config: func(ctx build.Context, args ...string) build.Config {
 +			return build.NewConfig(ctx, args...)
 +		},
