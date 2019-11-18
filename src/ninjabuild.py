@@ -80,10 +80,10 @@ class Kati(Build):
             cmd = 'ninja -f %s %s' % (self.ninja, target)
             logging.debug(cmd)
             proc = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, _ = proc.communicate()
-            if proc.returncode != 0 and len(stdout) != 0:
-                logging.debug(stdout)
-                return stdout
+            _, stderr = proc.communicate()
+            if proc.returncode != 0:
+                logging.debug(stderr)
+                return stderr
             return None
 
         out = None
@@ -112,10 +112,10 @@ class Soong(Build):
             cmd = 'ninja -f %s %s-soong' % (self.ninja, target)
             logging.debug(cmd)
             proc = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, _ = proc.communicate()
-            if proc.returncode != 0 and len(stdout) != 0:
-                logging.debug(stdout)
-                return stdout
+            _, stderr = proc.communicate()
+            if proc.returncode != 0:
+                logging.debug(stderr)
+                return stderr
             return None
 
         out = None
@@ -139,8 +139,8 @@ def kati(cache, ninja, name):
     try:
         instance = Kati(cache, ninja, name)
         out, status = instance.build()
-    except Exception as _:
-        return None, False
+    except Exception as e:
+        return str(e), False
 
     return out, status
 
@@ -149,8 +149,8 @@ def soong(cache, ninja, name):
     try:
         instance = Soong(cache, ninja, name)
         out, status = instance.build()
-    except Exception as _:
-        return None, False
+    except Exception as e:
+        return str(e), False
 
     return out, status
 
