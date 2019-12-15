@@ -176,16 +176,6 @@ upx -9 ckati
 
 ## Reference
 
-- Ninja
-
-  https://android.googlesource.com/platform/external/ninja/
-
-  https://note.qidong.name/2018/02/android-ninja-tips/
-
-  https://www.jianshu.com/p/d118615c1943
-
-
-
 - Blueprint
 
   https://github.com/google/blueprint
@@ -197,6 +187,16 @@ upx -9 ckati
 - Kati
 
   https://github.com/google/kati
+
+
+
+- Ninja
+
+  https://android.googlesource.com/platform/external/ninja/
+
+  https://note.qidong.name/2018/02/android-ninja-tips/
+
+  https://www.jianshu.com/p/d118615c1943
 
 
 
