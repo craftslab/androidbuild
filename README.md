@@ -164,9 +164,7 @@ ninja subtools:
 ### Blueprint
 
 ```bash
-git clone https://github.com/google/blueprint.git
-
-cd blueprint
+git clone https://github.com/google/blueprint.git; cd blueprint
 ./bootstrap.bash
 PATH=/path/to/ninja:$PATH; ./blueprint.bash
 upx -9 ./bin/*
@@ -177,9 +175,7 @@ upx -9 ./bin/*
 ### Kati
 
 ```bash
-git clone https://github.com/google/kati.git
-
-cd kati
+git clone https://github.com/google/kati.git; cd kati
 PATH=/path/to/ninja:$PATH; make -j4 ckati ckati_tests
 upx -9 ckati
 ```
