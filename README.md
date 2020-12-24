@@ -180,7 +180,7 @@ upx -9 ./bin/*
 git clone https://github.com/google/kati.git
 
 cd kati
-make
+PATH=/path/to/ninja:$PATH; make -j4 ckati ckati_tests
 upx -9 ckati
 ```
 
