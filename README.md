@@ -165,7 +165,7 @@ git clone https://github.com/google/blueprint.git
 
 cd blueprint
 ./bootstrap.bash
-./blueprint.bash
+PATH=/path/to/ninja:$PATH; ./blueprint.bash
 upx -9 ./bin/*
 ```
 
