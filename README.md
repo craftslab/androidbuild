@@ -132,11 +132,14 @@ $AOSP/out/
 ### Ninja
 
 ```bash
-git clone https://github.com/ninja-build/ninja.git
+wget https://github.com/Kitware/CMake/releases/download/v3.19.2/cmake-3.19.2-Linux-x86_64.tar.gz
+tar zxvf cmake-3.19.2-Linux-x86_64.tar.gz
+export PATH=$PWD/cmake-3.19.2-Linux-x86_64/bin:$PATH
 
-cd ninja
-./configure.py --bootstrap
-./ninja all
+git clone https://github.com/ninja-build/ninja.git; cd ninja
+cmake -DCMAKE_BUILD_TYPE=Release -B .
+cmake --build . --parallel --config Release
+strip ./ninja
 upx -9 ninja
 ```
 
