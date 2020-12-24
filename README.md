@@ -132,6 +132,9 @@ $AOSP/out/
 ### Ninja
 
 ```bash
+git clone https://github.com/ninja-build/ninja.git
+
+cd ninja
 ./configure.py --bootstrap
 ./ninja all
 upx -9 ninja
@@ -158,6 +161,9 @@ ninja subtools:
 ### Blueprint
 
 ```bash
+git clone https://github.com/google/blueprint.git
+
+cd blueprint
 ./bootstrap.bash
 ./blueprint.bash
 upx -9 ./bin/*
@@ -168,6 +174,9 @@ upx -9 ./bin/*
 ### Kati
 
 ```bash
+git clone https://github.com/google/kati.git
+
+cd kati
 make
 upx -9 ckati
 ```
