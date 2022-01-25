@@ -200,9 +200,9 @@ upx -9 ckati
 
   https://android.googlesource.com/platform/external/ninja/
 
-  https://github.com/ninja-build/ninja
-
   https://note.qidong.name/2018/02/android-ninja-tips/
+
+  https://opensource.google/projects/ninja
 
   https://www.jianshu.com/p/d118615c1943
 
