@@ -186,9 +186,7 @@ upx -9 ckati
 
 - Blueprint
 
-  https://github.com/google/blueprint
-
-  https://godoc.org/github.com/google/blueprint
+  https://opensource.google/projects/blueprint
 
 
 
