@@ -206,6 +206,8 @@ upx -9 ckati
 
   https://www.jianshu.com/p/d118615c1943
 
+  https://github.com/evmar/n2 (Ninja written in Rust)
+
 
 
 - Soong
